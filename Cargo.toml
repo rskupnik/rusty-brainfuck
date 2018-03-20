@@ -1,0 +1,6 @@
+[package]
+name = "rusty-brainfuck"
+version = "0.1.0"
+authors = ["Myzreal <r.skupnik@gmail.com>"]
+
+[dependencies]
