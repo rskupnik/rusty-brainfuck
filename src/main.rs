@@ -6,11 +6,32 @@ use interpreter::interpret;
 use vm::VirtualMachine;
 
 fn main() {
-    let val = interpret(">");
-    println!("{:?}", val);
+    let cmd = interpret(">", 0);
+    println!("{:?}", cmd);
 
-    let vm = VirtualMachine::new();
-    let mem_ptr = vm.memory_ptr();
-    println!("{}", mem_ptr);
+    let mut vm = VirtualMachine::new();
+    {
+        let mem_ptr = vm.memory_ptr();
+        println!("{}", mem_ptr);
+    }
+
+    vm.execute_command(&cmd);
+
+    let cmd = interpret("+", 0);
+    vm.execute_command(&cmd);
+
+    let cmd = interpret(".", 0);
+    {
+        let val = vm.execute_command(&cmd);
+        println!("{}", val);
+    }
+
+    let cmd = interpret(",", 20);
+    vm.execute_command(&cmd);
+    {
+       let cmd = interpret(".", 0);
+       let val = vm.execute_command(&cmd);
+       println!("{}", val);
+    }
 }
 
