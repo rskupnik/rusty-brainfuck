@@ -21,13 +21,13 @@ fn main() {
     vm.execute_command(&cmd);
 
     {
-        let val = vm.execute_output_command();
+        let val = vm.output();
         println!("{}", val);
     }
 
-    vm.execute_input_command(20);
+    vm.input(20);
     {
-       let val = vm.execute_output_command();
+       let val = vm.output();
        println!("{}", val);
     }
 }
