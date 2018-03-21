@@ -37,18 +37,19 @@ impl VirtualMachine {
                 println!("Memory value at {} decreased and is now {}", self.memory_ptr, self.memory[self.memory_ptr as usize]);
                 0
             }
-            &Command::Output => {
-                self.memory[self.memory_ptr as usize]
-            }
-            &Command::Input(val) => {
-                self.memory[self.memory_ptr as usize] = val;
-                0
-            }
             _ => {
                 println!("{:?}", cmd);
                 0
             }
         }
+    }
+
+    pub fn execute_input_command(&mut self, val: u8) {
+        self.memory[self.memory_ptr as usize] = val;
+    }
+
+    pub fn execute_output_command(&self) -> u8 {
+        self.memory[self.memory_ptr as usize]
     }
     
     pub fn memory_ptr(&self) -> &u32 {

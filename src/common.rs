@@ -5,17 +5,19 @@ pub enum Command {
     Increment,
     Decrement,
     Output,
-    Input(u8),
+    Input,
     LoopStart,
     LoopEnd,
     Unknown
 }
 
-impl PartialEq for Command::Input {
-    fn eq(&self, other: &Command::Input) -> bool {
+/*impl PartialEq for Command {
+    fn eq(&self, other: &Command) -> bool {
         match (self, other) {
             (&Command::Input(ref a), &Command::Input(ref b)) => a == b,
+            (&Command::Input(ref a), &Command) => false,
+            (&Command, &Command::Input(ref a)) => false,
             _ => false
         }
     }
-}
+}*/

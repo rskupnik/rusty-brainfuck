@@ -6,7 +6,7 @@ use interpreter::interpret;
 use vm::VirtualMachine;
 
 fn main() {
-    let cmd = interpret(">", 0);
+    let cmd = interpret(">");
     println!("{:?}", cmd);
 
     let mut vm = VirtualMachine::new();
@@ -17,20 +17,17 @@ fn main() {
 
     vm.execute_command(&cmd);
 
-    let cmd = interpret("+", 0);
+    let cmd = interpret("+");
     vm.execute_command(&cmd);
 
-    let cmd = interpret(".", 0);
     {
-        let val = vm.execute_command(&cmd);
+        let val = vm.execute_output_command();
         println!("{}", val);
     }
 
-    let cmd = interpret(",", 20);
-    vm.execute_command(&cmd);
+    vm.execute_input_command(20);
     {
-       let cmd = interpret(".", 0);
-       let val = vm.execute_command(&cmd);
+       let val = vm.execute_output_command();
        println!("{}", val);
     }
 }
