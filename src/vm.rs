@@ -67,10 +67,87 @@ mod tests {
     use super::*;
 
     #[test]
+    fn input_should_set_value_and_output_should_read() {
+        let mut vm = VirtualMachine::new();
+        vm.input(40);
+        let val = vm.output();
+
+        assert_eq!(40, val);
+    }
+
+    #[test]
+    fn set_memory_ptr_should_set_memory_pointer() {
+        let mut vm = VirtualMachine::new();
+        vm.set_memory_ptr(20);
+        
+        assert_eq!(20, *vm.memory_ptr());
+    }
+
+    #[test]
     fn shift_right_should_increase_memory_pointer() {
         let mut vm = VirtualMachine::new();
         vm.shift_right();
         
         assert_eq!(1, *vm.memory_ptr());
+    }
+
+    #[test]
+    fn shift_right_should_not_increase_memory_pointer_above_threshold() {
+        let mut vm = VirtualMachine::new();
+        vm.set_memory_ptr(99);
+        vm.shift_right();
+
+        assert_eq!(99, *vm.memory_ptr());
+    }
+
+    #[test]
+    fn shift_left_should_decrease_memory_pointer() {
+        let mut vm = VirtualMachine::new();
+        vm.set_memory_ptr(99);
+        vm.shift_left();
+
+        assert_eq!(98, *vm.memory_ptr());
+    }
+
+    #[test]
+    fn shift_left_should_not_decrease_memory_pointer_below_threshold() {
+        let mut vm = VirtualMachine::new();
+        vm.shift_left();
+
+        assert_eq!(0, *vm.memory_ptr());
+    }
+
+    #[test]
+    fn increment_should_increase_value_at_memory_pointer() {
+        let mut vm = VirtualMachine::new();
+        vm.increment();
+        let val = vm.output();
+
+        assert_eq!(1, val);
+    }
+
+    #[test]
+    #[should_panic]
+    fn increment_over_threshold_should_panic() {
+        let mut vm = VirtualMachine::new();
+        vm.input(255);
+        vm.increment();
+    }
+
+    #[test]
+    fn decrement_should_decrease_value_at_memory_pointer() {
+        let mut vm = VirtualMachine::new();
+        vm.input(1);
+        vm.decrement();
+        let val = vm.output();
+
+        assert_eq!(0, val);
+    }
+
+    #[test]
+    #[should_panic]
+    fn decrement_below_threshold_should_panic() {
+        let mut vm = VirtualMachine::new();
+        vm.decrement();
     }
 }
