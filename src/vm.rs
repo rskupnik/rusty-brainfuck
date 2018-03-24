@@ -1,4 +1,5 @@
 use common::Command;
+use std::collections::HashMap;
 
 pub struct VirtualMachine {
     memory_ptr: u32,
@@ -9,6 +10,10 @@ impl VirtualMachine {
 
     pub fn new() -> VirtualMachine {
         VirtualMachine { memory_ptr: 0, memory: [0; 100] }
+    }
+
+    pub fn execute_program(&mut self, program: &str) {
+        
     }
 
     pub fn execute_command(&mut self, cmd: &Command) {
