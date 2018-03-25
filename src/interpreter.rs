@@ -36,7 +36,7 @@ mod tests {
     use std::collections::HashMap;
 
     #[test]
-    fn translate_into_map() {
+    fn translates_program_into_map() {
         let program = ">.<";
         let result: HashMap<usize, Command> = translate(program);
         assert_eq!(3, result.len());
