@@ -53,13 +53,25 @@ impl VirtualMachine {
         }
     }
 
-    pub fn execute_command(&mut self, cmd: &Command) {
+    pub fn execute_command(&mut self, cmd: &Command) -> Option<()> {
         match cmd {
-            &Command::ShiftRight =>self.shift_right(),
-            &Command::ShiftLeft => self.shift_left(),
-            &Command::Increment => self.increment(),
-            &Command::Decrement => self.decrement(),
-            _ => ()
+            &Command::ShiftRight => {
+		self.shift_right();
+		Some(())
+	    },
+            &Command::ShiftLeft => { 
+		self.shift_left();
+		Some(())
+	    },
+            &Command::Increment => { 
+		self.increment();
+		Some(())
+	    },
+            &Command::Decrement => { 
+		self.decrement();
+		Some(())
+	    },
+            _ => None
         }
     }
 
