@@ -4,27 +4,6 @@ use std::collections::HashMap;
 use std::vec::Vec;
 use interpreter::translate;
 
-fn find_loops(commands: &Vec<(usize, Command)>) -> HashMap<usize, Loop> { 
-    let mut output: HashMap<usize, Loop> = HashMap::new();
-    let mut loop_stack: Vec<Loop> = Vec::new();
-    for &(pos, ref command) in commands {
-	//println!("(pos, command) == {} {:?}", pos, command);
-        match command {
-	    &Command::LoopStart => {
-		loop_stack.push(Loop::new(pos));
-            },
-	    &Command::LoopEnd => {
-		let mut lp = loop_stack.pop().expect("a loop should be on the stack");
-                lp.end_pos = pos;
-                output.insert(*lp.start_pos(), lp);
-		
-	    },
-	    _ => ()
-        }
-    }
-    output
-}
-
 pub struct VirtualMachine {
     memory_ptr: u32,
     memory: [u8; 100]
@@ -114,7 +93,27 @@ impl VirtualMachine {
     pub fn set_memory_ptr(&mut self, val: u32) {
         self.memory_ptr = val;
     }
+}
 
+fn find_loops(commands: &Vec<(usize, Command)>) -> HashMap<usize, Loop> { 
+    let mut output: HashMap<usize, Loop> = HashMap::new();
+    let mut loop_stack: Vec<Loop> = Vec::new();
+    for &(pos, ref command) in commands {
+	//println!("(pos, command) == {} {:?}", pos, command);
+        match command {
+	    &Command::LoopStart => {
+		loop_stack.push(Loop::new(pos));
+            },
+	    &Command::LoopEnd => {
+		let mut lp = loop_stack.pop().expect("a loop should be on the stack");
+                lp.end_pos = pos;
+                output.insert(*lp.start_pos(), lp);
+		
+	    },
+	    _ => ()
+        }
+    }
+    output
 }
 
 #[cfg(test)]
