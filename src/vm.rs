@@ -4,22 +4,18 @@ use std::collections::HashMap;
 use std::vec::Vec;
 use interpreter::translate;
 
-fn find_loops(commands: &HashMap<usize, Command>) -> HashMap<usize, Loop> { 
+fn find_loops(commands: &Vec<(usize, Command)>) -> HashMap<usize, Loop> { 
     let mut output: HashMap<usize, Loop> = HashMap::new();
     let mut loop_stack: Vec<Loop> = Vec::new();
-    for (pos, command) in commands {
+    for &(pos, ref command) in commands {
 	//println!("(pos, command) == {} {:?}", pos, command);
         match command {
 	    &Command::LoopStart => {
-                { println!("New loop at {}", pos); }
-		loop_stack.push(Loop::new(*pos));
+		loop_stack.push(Loop::new(pos));
             },
 	    &Command::LoopEnd => {
 		let mut lp = loop_stack.pop().expect("a loop should be on the stack");
-                lp.end_pos = *pos;
-		{
-		    println!("Found a loop: {}, {}", *lp.start_pos(), lp.end_pos);
-		}
+                lp.end_pos = pos;
                 output.insert(*lp.start_pos(), lp);
 		
 	    },
@@ -41,7 +37,7 @@ impl VirtualMachine {
     }
 
     pub fn execute_program(&mut self, program: &str) {
-	let commands: HashMap<usize, Command> = translate(program);
+	let commands: Vec<(usize, Command)> = translate(program);
 	let loops: HashMap<usize, Loop> = find_loops(&commands);
     }
 
@@ -109,7 +105,7 @@ mod tests {
     #[test]
     fn should_find_loops() {
 	let program_str = "[>]";
-        let program: HashMap<usize, Command> = translate(program_str);
+        let program: Vec<(usize, Command)> = translate(program_str);
         let lps: HashMap<usize, Loop> = find_loops(&program);
 
         assert_eq!(1, lps.len());
@@ -122,12 +118,7 @@ mod tests {
     #[test]
     fn should_find_nested_loops() {
         let program_str = "[>[>[>]<]<]";
-        let program: HashMap<usize, Command> = translate(program_str);
-        {
-	    for (pos, cmd) in &program {
-	        println!("{}: {:?}", pos, cmd);
-            }
-        }
+        let program: Vec<(usize, Command)> = translate(program_str);
         let lps: HashMap<usize, Loop> = find_loops(&program);
 
         assert_eq!(3, lps.len());
@@ -141,8 +132,8 @@ mod tests {
         assert_eq!(8, lp.end_pos);
 
         let lp = lps.get(&4).expect("A loop at position 4");
-        assert_eq!(0, *lp.start_pos());
-        assert_eq!(10, lp.end_pos);
+        assert_eq!(4, *lp.start_pos());
+        assert_eq!(6, lp.end_pos);
     }
 
     #[test]

@@ -1,5 +1,5 @@
 use common::Command;
-use std::collections::HashMap;
+use std::vec::Vec;
 
 pub fn interpret(cmd: &str) -> Command {
     interpret_char(cmd.chars().next().unwrap())
@@ -19,11 +19,11 @@ fn interpret_char(cmd: char) -> Command {
     }
 }
 
-pub fn translate(program: &str) -> HashMap<usize, Command> {
-    let mut output = HashMap::new();
+pub fn translate(program: &str) -> Vec<(usize, Command)> {
+    let mut output = Vec::new();
     let mut counter: usize = 0;
     for c in program.chars() {
-        output.insert(counter, interpret_char(c));
+        output.push((counter, interpret_char(c)));
         counter += 1;
     }
     output
@@ -33,16 +33,16 @@ pub fn translate(program: &str) -> HashMap<usize, Command> {
 mod tests {
     use super::*;
     use common::Command;
-    use std::collections::HashMap;
+    use std::vec::Vec;
 
     #[test]
     fn translates_program_into_map() {
         let program = ">.<";
-        let result: HashMap<usize, Command> = translate(program);
+        let result: Vec<(usize, Command)> = translate(program);
         assert_eq!(3, result.len());
-        assert_eq!(&Command::ShiftRight, result.get(&0).expect("should be ShiftRight"));
-        assert_eq!(&Command::Output, result.get(&1).expect("should be Output"));
-        assert_eq!(&Command::ShiftLeft, result.get(&2).expect("should be ShiftLeft"));
+        assert_eq!(Command::ShiftRight, result[0].1);
+        assert_eq!(Command::Output, result[1].1);
+        assert_eq!(Command::ShiftLeft, result[2].1);
     }
 
     #[test]
