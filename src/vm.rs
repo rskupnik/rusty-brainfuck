@@ -3,6 +3,7 @@ use common::Loop;
 use std::collections::HashMap;
 use std::vec::Vec;
 use interpreter::translate;
+use std::io::stdin;
 
 pub struct VirtualMachine {
     memory_ptr: u32,
@@ -17,7 +18,8 @@ impl VirtualMachine {
 
     pub fn execute_program(&mut self, program: &str) {
 	let commands: Vec<(usize, Command)> = translate(program);
-	let loops: HashMap<usize, Loop> = find_loops(&commands);
+	let mut loops: HashMap<usize, Loop> = find_loops(&commands);
+	let mut loop_stack: Vec<Loop> = Vec::new();
 
 	let mut program_counter: usize = 0;
 	loop {
@@ -25,8 +27,37 @@ impl VirtualMachine {
 		break;
             }
 
-            let cmd = &commands[program_counter];
-	    
+            let &(pos, ref cmd) = &commands[program_counter];
+	    if !self.execute_command(cmd) {
+		match cmd {
+		    &Command::Output => {
+			let output = self.output();
+			println!("{}", output as char);
+		    },
+		    &Command::Input => {
+			let c = get_input().expect("single char as input");
+                        self.input(c as u8);
+		    },
+		    &Command::LoopStart => {
+			let lp = loops.remove(&pos).expect("A loop found earlier");
+			let output = self.output();
+			if output == 0 {
+			    program_counter = *lp.start_pos();
+			} else {
+			    loop_stack.push(lp);
+			}
+		    },
+		    &Command::LoopEnd => {
+			let output = self.output();
+			if output != 0 {
+			    program_counter = {*(*(&loop_stack[loop_stack.len()-1].start_pos()))};
+			} else {
+			    loop_stack.pop();
+			}
+		    }
+		    _ => ()
+		}
+	    }
 
             program_counter += 1;
         }
@@ -114,6 +145,17 @@ fn find_loops(commands: &Vec<(usize, Command)>) -> HashMap<usize, Loop> {
         }
     }
     output
+}
+
+fn get_input() -> Option<char> {
+    let mut input = String::new();
+    match stdin().read_line(&mut input) {
+	Ok(_n) => Some(input.chars().next().unwrap()),
+	Err(error) => { 
+	    println!("error: {}", error);
+	    None
+	}
+    }
 }
 
 #[cfg(test)]
