@@ -13,7 +13,7 @@ pub enum Command {
 
 pub struct Loop {
     start_pos: usize,
-    end_pos: usize,
+    pub end_pos: usize,
     counter_ptr: usize
 }
 
