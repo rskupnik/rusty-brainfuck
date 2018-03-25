@@ -39,6 +39,18 @@ impl VirtualMachine {
     pub fn execute_program(&mut self, program: &str) {
 	let commands: Vec<(usize, Command)> = translate(program);
 	let loops: HashMap<usize, Loop> = find_loops(&commands);
+
+	let mut program_counter: usize = 0;
+	loop {
+	    if program_counter >= commands.len() {
+		break;
+            }
+
+            let cmd = &commands[program_counter];
+	    // TODO: Execute command
+
+            program_counter += 1;
+        }
     }
 
     pub fn execute_command(&mut self, cmd: &Command) {
