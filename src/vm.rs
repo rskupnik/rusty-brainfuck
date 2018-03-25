@@ -47,31 +47,31 @@ impl VirtualMachine {
             }
 
             let cmd = &commands[program_counter];
-	    // TODO: Execute command
+	    
 
             program_counter += 1;
         }
     }
 
-    pub fn execute_command(&mut self, cmd: &Command) -> Option<()> {
+    pub fn execute_command(&mut self, cmd: &Command) -> bool {
         match cmd {
             &Command::ShiftRight => {
 		self.shift_right();
-		Some(())
+		true
 	    },
             &Command::ShiftLeft => { 
 		self.shift_left();
-		Some(())
+		true
 	    },
             &Command::Increment => { 
 		self.increment();
-		Some(())
+		true
 	    },
             &Command::Decrement => { 
 		self.decrement();
-		Some(())
+		true
 	    },
-            _ => None
+            _ => false
         }
     }
 
