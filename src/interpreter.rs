@@ -1,5 +1,33 @@
+//! Holds code that translates tokens into `Command` objects
+
 use cmd::Command;
 use std::vec::Vec;
+
+/// Translates a `&str` *program* to a `Vec<(usize, Command)>` which is a stack
+/// of (line_nr, Command) tuples.
+///
+/// # Examples
+/// 
+/// ```
+/// use cmd::Command;
+/// use std::vec::Vec;
+///
+/// let prg = ">.<";
+/// let output: Vec<(usize, Command)> = translate(prg);
+/// assert_eq!(3, output.len());
+/// assert_eq!(Command::ShiftRight, result[0].1);
+/// assert_eq!(Command::Output, result[1].1);
+/// assert_eq!(Command::ShiftLeft, result[2].1);
+/// ```
+pub fn translate(program: &str) -> Vec<(usize, Command)> {
+    let mut output = Vec::new();
+    let mut counter: usize = 0;
+    for c in program.chars() {
+        output.push((counter, interpret_char(c)));
+        counter += 1;
+    }
+    output
+}
 
 fn interpret_char(cmd: char) -> Command {
     match cmd {
@@ -13,16 +41,6 @@ fn interpret_char(cmd: char) -> Command {
         ']' => Command::LoopEnd,
         _ => Command::Unknown
     }
-}
-
-pub fn translate(program: &str) -> Vec<(usize, Command)> {
-    let mut output = Vec::new();
-    let mut counter: usize = 0;
-    for c in program.chars() {
-        output.push((counter, interpret_char(c)));
-        counter += 1;
-    }
-    output
 }
 
 #[cfg(test)]

@@ -1,3 +1,5 @@
+//! Holds the actual `VirtualMachine` that executes the program
+
 use cmd::Command;
 use lp::Loop;
 use std::collections::HashMap;
@@ -6,6 +8,8 @@ use interpreter::translate;
 use std::io::stdin;
 use std::string::String;
 
+/// The `VirtualMachine` is very simple, it only has a 100 bytes of memory
+/// and a `memory_ptr` to point to the current memory slot.
 pub struct VirtualMachine {
     memory_ptr: u32,
     memory: [u8; 100]
@@ -13,10 +17,14 @@ pub struct VirtualMachine {
 
 impl VirtualMachine {
 
+    /// Constructs a new `VirtualMachine` - the memory is initialized to 0
+    /// and the `memory_ptr` is set to 0.
     pub fn new() -> VirtualMachine {
         VirtualMachine { memory_ptr: 0, memory: [0; 100] }
     }
 
+    /// Executes a program in a form of a `&str` and returns the result
+    /// in the form of a heap-allocated `String`.
     pub fn execute_program(&mut self, program: &str) -> String {
 	let mut output: String = String::new();
 	
