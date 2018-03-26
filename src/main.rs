@@ -15,10 +15,10 @@ fn main() {
         println!("{}", mem_ptr);
     }
 
-    vm.execute_command(&cmd);
+    vm.execute_stateless_command(&cmd);
 
     let cmd = interpret("+");
-    vm.execute_command(&cmd);
+    vm.execute_stateless_command(&cmd);
 
     {
         let val = vm.output();

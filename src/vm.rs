@@ -28,7 +28,7 @@ impl VirtualMachine {
             }
 
             let &(pos, ref cmd) = &commands[program_counter];
-	    if !self.execute_command(cmd) {
+	    if !self.execute_stateless_command(cmd) {
 		match cmd {
 		    &Command::Output => {
 			let output = self.output();
@@ -50,7 +50,10 @@ impl VirtualMachine {
 		    &Command::LoopEnd => {
 			let output = self.output();
 			if output != 0 {
-			    program_counter = {*(*(&loop_stack[loop_stack.len()-1].start_pos()))};
+			    program_counter = {
+				let lp: &Loop = &loop_stack[loop_stack.len()-1];
+				*lp.start_pos()
+			    };
 			} else {
 			    loop_stack.pop();
 			}
@@ -63,7 +66,7 @@ impl VirtualMachine {
         }
     }
 
-    pub fn execute_command(&mut self, cmd: &Command) -> bool {
+    pub fn execute_stateless_command(&mut self, cmd: &Command) -> bool {
         match cmd {
             &Command::ShiftRight => {
 		self.shift_right();
