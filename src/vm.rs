@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::vec::Vec;
 use interpreter::translate;
 use std::io::stdin;
-
+use std::string::String;
 
 pub struct VirtualMachine {
     memory_ptr: u32,
@@ -17,11 +17,13 @@ impl VirtualMachine {
         VirtualMachine { memory_ptr: 0, memory: [0; 100] }
     }
 
-    pub fn execute_program(&mut self, program: &str) {
+    pub fn execute_program(&mut self, program: &str) -> String {
+	let mut output: String = String::new();
+	
 	let commands: Vec<(usize, Command)> = translate(program);
 	let loops: HashMap<usize, Loop> = find_loops(&commands);
+	
 	let mut loop_stack: Vec<&Loop> = Vec::new();
-
 	let mut program_counter: usize = 0;
 	loop {
 	    if program_counter >= commands.len() {
@@ -32,8 +34,8 @@ impl VirtualMachine {
 	    if !self.execute_stateless_command(cmd) {
 		match cmd {
 		    &Command::Output => {
-			let output = self.output();
-			print!("{}", output as char);
+			output.push(self.output() as char);
+			//print!("{}", output as char);
 		    },
 		    &Command::Input => {
 			let c = get_input().expect("single char as input");
@@ -65,6 +67,8 @@ impl VirtualMachine {
 
             program_counter += 1;
         }
+
+	output
     }
 
     fn execute_stateless_command(&mut self, cmd: &Command) -> bool {
@@ -162,6 +166,12 @@ mod tests {
     use std::collections::HashMap;
     use std::vec::Vec;
     use interpreter::translate;
+
+    #[test]
+    fn should_execute_hello_world_program() {
+	let program = "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.";
+	let vm = VirtualMachine::new();
+    }
 
     #[test]
     fn should_find_loops() {
