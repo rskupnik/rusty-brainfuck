@@ -1,5 +1,6 @@
 mod interpreter;
-mod common;
+mod cmd;
+mod lp;
 mod vm;
 
 use vm::VirtualMachine;

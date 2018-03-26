@@ -1,5 +1,5 @@
-use common::Command;
-use common::Loop;
+use cmd::Command;
+use lp::Loop;
 use std::collections::HashMap;
 use std::vec::Vec;
 use interpreter::translate;
@@ -161,8 +161,8 @@ fn get_input() -> Option<char> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use common::Command;
-    use common::Loop;
+    use cmd::Command;
+    use lp::Loop;
     use std::collections::HashMap;
     use std::vec::Vec;
     use interpreter::translate;

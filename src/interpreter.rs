@@ -1,4 +1,4 @@
-use common::Command;
+use cmd::Command;
 use std::vec::Vec;
 
 fn interpret_char(cmd: char) -> Command {
@@ -28,7 +28,7 @@ pub fn translate(program: &str) -> Vec<(usize, Command)> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use common::Command;
+    use cmd::Command;
     use std::vec::Vec;
 
     #[test]
