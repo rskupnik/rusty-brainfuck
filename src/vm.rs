@@ -19,7 +19,7 @@ impl VirtualMachine {
     pub fn execute_program(&mut self, program: &str) {
 	let commands: Vec<(usize, Command)> = translate(program);
 	let mut loops: HashMap<usize, Loop> = find_loops(&commands);
-	let mut loop_stack: Vec<Loop> = Vec::new();
+	let mut loop_stack: Vec<&Loop> = Vec::new();
 
 	let mut program_counter: usize = 0;
 	loop {
@@ -32,14 +32,14 @@ impl VirtualMachine {
 		match cmd {
 		    &Command::Output => {
 			let output = self.output();
-			println!("{}", output as char);
+			print!("{}", output as char);
 		    },
 		    &Command::Input => {
 			let c = get_input().expect("single char as input");
                         self.input(c as u8);
 		    },
 		    &Command::LoopStart => {
-			let lp = loops.remove(&pos).expect("A loop found earlier");
+			let lp = loops.get(&pos).expect("A loop found earlier");
 			let output = self.output();
 			if output == 0 {
 			    program_counter = *lp.start_pos();
@@ -66,7 +66,7 @@ impl VirtualMachine {
         }
     }
 
-    pub fn execute_stateless_command(&mut self, cmd: &Command) -> bool {
+    fn execute_stateless_command(&mut self, cmd: &Command) -> bool {
         match cmd {
             &Command::ShiftRight => {
 		self.shift_right();
@@ -88,44 +88,36 @@ impl VirtualMachine {
         }
     }
 
-    pub fn increment(&mut self) {
+    fn increment(&mut self) {
         self.memory[self.memory_ptr as usize] += 1;
-        println!("Memory value at {} increased and is now {}", self.memory_ptr, self.memory[self.memory_ptr as usize]);
+        //println!("Memory value at {} increased and is now {}", self.memory_ptr, self.memory[self.memory_ptr as usize]);
     }
 
-    pub fn decrement(&mut self) {
+    fn decrement(&mut self) {
         self.memory[self.memory_ptr as usize] -=1;
-        println!("Memory value at {} decreased and is now {}", self.memory_ptr, self.memory[self.memory_ptr as usize]);
+        //println!("Memory value at {} decreased and is now {}", self.memory_ptr, self.memory[self.memory_ptr as usize]);
     }
 
-    pub fn shift_right(&mut self) {
+    fn shift_right(&mut self) {
         if self.memory_ptr != 99 {
             self.memory_ptr += 1;
         }
-        println!("Memory pointer shifted right and is now at {}", self.memory_ptr);
+        //println!("Memory pointer shifted right and is now at {}", self.memory_ptr);
     }
 
-    pub fn shift_left(&mut self) {
+    fn shift_left(&mut self) {
         if self.memory_ptr != 0 {
             self.memory_ptr -= 1;
         }
-        println!("Memory pointer shifted left and is now at {}", self.memory_ptr);
+        //println!("Memory pointer shifted left and is now at {}", self.memory_ptr);
     }
 
-    pub fn input(&mut self, val: u8) {
+    fn input(&mut self, val: u8) {
         self.memory[self.memory_ptr as usize] = val;
     }
 
-    pub fn output(&self) -> u8 {
+    fn output(&self) -> u8 {
         self.memory[self.memory_ptr as usize]
-    }
-    
-    pub fn memory_ptr(&self) -> &u32 {
-        &self.memory_ptr
-    }
-
-    pub fn set_memory_ptr(&mut self, val: u32) {
-        self.memory_ptr = val;
     }
 }
 
@@ -214,37 +206,29 @@ mod tests {
     }
 
     #[test]
-    fn set_memory_ptr_should_set_memory_pointer() {
-        let mut vm = VirtualMachine::new();
-        vm.set_memory_ptr(20);
-        
-        assert_eq!(20, *vm.memory_ptr());
-    }
-
-    #[test]
     fn shift_right_should_increase_memory_pointer() {
         let mut vm = VirtualMachine::new();
         vm.shift_right();
         
-        assert_eq!(1, *vm.memory_ptr());
+        assert_eq!(1, vm.memory_ptr);
     }
 
     #[test]
     fn shift_right_should_not_increase_memory_pointer_above_threshold() {
         let mut vm = VirtualMachine::new();
-        vm.set_memory_ptr(99);
+        vm.memory_ptr = 99;
         vm.shift_right();
 
-        assert_eq!(99, *vm.memory_ptr());
+        assert_eq!(99, vm.memory_ptr);
     }
 
     #[test]
     fn shift_left_should_decrease_memory_pointer() {
         let mut vm = VirtualMachine::new();
-        vm.set_memory_ptr(99);
+        vm.memory_ptr = 99;
         vm.shift_left();
 
-        assert_eq!(98, *vm.memory_ptr());
+        assert_eq!(98, vm.memory_ptr);
     }
 
     #[test]
@@ -252,7 +236,7 @@ mod tests {
         let mut vm = VirtualMachine::new();
         vm.shift_left();
 
-        assert_eq!(0, *vm.memory_ptr());
+        assert_eq!(0, vm.memory_ptr);
     }
 
     #[test]
