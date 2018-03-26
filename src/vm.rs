@@ -5,6 +5,7 @@ use std::vec::Vec;
 use interpreter::translate;
 use std::io::stdin;
 
+
 pub struct VirtualMachine {
     memory_ptr: u32,
     memory: [u8; 100]
@@ -18,7 +19,7 @@ impl VirtualMachine {
 
     pub fn execute_program(&mut self, program: &str) {
 	let commands: Vec<(usize, Command)> = translate(program);
-	let mut loops: HashMap<usize, Loop> = find_loops(&commands);
+	let loops: HashMap<usize, Loop> = find_loops(&commands);
 	let mut loop_stack: Vec<&Loop> = Vec::new();
 
 	let mut program_counter: usize = 0;

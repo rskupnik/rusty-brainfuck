@@ -2,7 +2,6 @@ mod interpreter;
 mod common;
 mod vm;
 
-use interpreter::interpret;
 use vm::VirtualMachine;
 
 fn main() {

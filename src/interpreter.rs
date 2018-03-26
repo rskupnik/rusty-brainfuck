@@ -1,10 +1,6 @@
 use common::Command;
 use std::vec::Vec;
 
-pub fn interpret(cmd: &str) -> Command {
-    interpret_char(cmd.chars().next().unwrap())
-}
-
 fn interpret_char(cmd: char) -> Command {
     match cmd {
         '>' => Command::ShiftRight,
@@ -47,49 +43,49 @@ mod tests {
 
     #[test]
     fn interprets_shift_right_command() {
-        let cmd = interpret(">");
+        let cmd = interpret_char('>');
         assert_eq!(cmd, Command::ShiftRight);
     }
 
     #[test]
     fn interprets_shift_left_command() {
-        let cmd = interpret("<");
+        let cmd = interpret_char('<');
         assert_eq!(cmd, Command::ShiftLeft);
     }
 
     #[test]
     fn interprets_increment_command() {
-        let cmd = interpret("+");
+        let cmd = interpret_char('+');
         assert_eq!(cmd, Command::Increment);
     }
 
     #[test]
     fn interprets_decrement_command() {
-        let cmd = interpret("-");
+        let cmd = interpret_char('-');
         assert_eq!(cmd, Command::Decrement);
     }
 
     #[test]
     fn interprets_output_command() {
-        let cmd = interpret(".");
+        let cmd = interpret_char('.');
         assert_eq!(cmd, Command::Output);
     }
 
     #[test]
     fn interprets_input_command() {
-        let cmd = interpret(",");
+        let cmd = interpret_char(',');
         assert_eq!(cmd, Command::Input);
     }
 
     #[test]
     fn interprets_loop_start_command() {
-        let cmd = interpret("[");
+        let cmd = interpret_char('[');
         assert_eq!(cmd, Command::LoopStart);
     }
 
     #[test]
     fn interprets_loop_end_command() {
-        let cmd = interpret("]");
+        let cmd = interpret_char(']');
         assert_eq!(cmd, Command::LoopEnd);
     }
 
