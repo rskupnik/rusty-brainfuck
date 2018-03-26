@@ -170,7 +170,9 @@ mod tests {
     #[test]
     fn should_execute_hello_world_program() {
 	let program = "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.";
-	let vm = VirtualMachine::new();
+	let mut vm = VirtualMachine::new();
+	let output = vm.execute_program(program);
+        assert_eq!("Hello World!\n", output);
     }
 
     #[test]
